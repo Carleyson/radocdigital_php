@@ -16,7 +16,7 @@ require_once  __DIR__ . '/../inc/navbar.php';
 
 <body>
     <div class="container p-5">
-        <form method="post" action="cadastro.php">
+        <form method="post" action="?rota=cadastro_submit">
             <div class="col text-center">
                 <h2>Cadastro do docente</h2><br>
             </div>

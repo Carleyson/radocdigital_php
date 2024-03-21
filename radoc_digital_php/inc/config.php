@@ -1,7 +1,10 @@
 <?php
 
 //configurações do banco de dados
-define('DB_HOST',       'localhost');
-define('DB_NAME',       'php_radoc');
-define('DB_USER',       'cppd');
-define('DB_PASS',       'Ufra003481!');
+define('MYSQL_OPTIONS', [
+    'db_host' => 'localhost',
+    'db_name' =>  'bdradoc',
+    'db_user' =>  'admin',
+    'db_pass' =>  'yerushalaim56tov',
+    'db_char' =>  'utf8mb4',
+]);

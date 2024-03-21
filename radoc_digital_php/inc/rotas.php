@@ -7,7 +7,8 @@ return [
     'login_submit',
     'logout',
 
-    'page1',
-    'page2',
-    'page3'
+    'cadastro',
+    'cadastro_submit',
+    'pdocente',
+    'pcppd'
 ];

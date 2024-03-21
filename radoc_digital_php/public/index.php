@@ -2,11 +2,6 @@
 
 // inicio da sessão
 session_start();
-
-//require_once('libs/EasyPDO.php');
-
-//use EasyPDO;
-
 // carregamento das rotas permitidas
 $rotas_permitidas = require_once __DIR__ . '/../inc/rotas.php';
 
@@ -52,22 +47,26 @@ switch ($rota) {
         $script .= 'home.php';
         break;
 
-    case 'page1':
+    case 'cadastro':
         $script .= 'cadastro.php';
         break;
 
-    case 'page2':
+    case 'cadastro_submit':
+        $script .= 'cadastro_submit.php';
+        break;
+
+    case 'pdocente':
         $script .= 'pdocente.php';
         break;
 
-    case 'page3':
+    case 'pcppd':
         $script .= 'pcppd.php';
         break;
 }
 
 // carregamento de scripts permanentes
+require_once __DIR__ . "/../inc/EasyPDO.php";
 require_once __DIR__ . "/../inc/config.php";
-require_once __DIR__ . "/../inc/database.php";
 
 // apresentação da página
 require_once __DIR__ . "/../inc/header.php";

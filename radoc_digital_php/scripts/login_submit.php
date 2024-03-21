@@ -1,60 +1,53 @@
 <?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $usuario = isset($_POST['text_usuario']) ? trim(htmlspecialchars($_POST['text_usuario'])) : null;
+    $senha = isset($_POST['text_senha']) ? trim(htmlspecialchars($_POST['text_senha'])) : null;
 
-// verifica se aconteceu o POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    // Verifica se os dados estão preenchidos
+    if (!$usuario || !$senha) {
+        header('Location: /?rota=login');
+        exit;
+    }
+    //abrir base de dados
+    $bd = new EasyPDO\EasyPDO(MYSQL_OPTIONS);
+
+    $resultado = $bd->query("SELECT * FROM login WHERE login = :login ", [
+        ':login' => $usuario,
+
+    ]);
+    
+    // Verifica se houve algum erro na consulta
+    if (!$resultado) {
+        session_start();
+        $_SESSION['erro'] = 'Usuário ou senha inválidos';
+        header('Location: index.php?rota=login');
+        exit;
+    }
+
+    // Verifica se o usuário existe
+    if (empty($resultado)) {
+        session_start();
+        $_SESSION['erro'] = 'Usuário ou senha inválidos';
+        header('Location: index.php?rota=login');
+        exit;
+    }
+
+    // Verifica se a senha está correta
+    if (!$bd->verifyPassword($senha, $resultado[0]['senha'])) {
+        session_start();
+        $_SESSION['erro'] = 'Usuário ou senha inválidos';
+        header('Location: index.php?rota=login');
+        exit;
+    }
+
+    // Define a sessão do usuário
+    session_start();
+    $_SESSION['usuario'] = $resultado[0];
+
+    // Redireciona para a página inicial
+    header('Location: index.php?rota=home');
+    exit;
+} else {
     header('Location: /?rota=login');
     exit;
 }
-
-// vai buscar os dados do POST
-$cpf_usuario = $_POST['text_usuario'] ?? null;
-$senha = $_POST['text_senha'] ?? null;
-
-//verifica se os dados estão preenchidos
-if (!$cpf_usuario || !$senha) {
-    header('Location: /?rota=login');
-    exit;
-}
-
-// a class da base de dados já está carregada no index.php
-$db = new database();
-
-// vai procurar o usuário na base de dados
-$params = [
-    ':usuario' => $cpf_usuario
-];
-$sql = "SELECT * FROM usuarios WHERE cpf_usuario = :usuario";
-$result = $db->query($sql, $params);
-
-// verifica se aconteceu um erro
-if ($result['status'] === 'error') {
-
-    header('Location: index.php?rota=404');
-    exit;
-}
-
-//verifica se o usuario existe
-if (count($result['data']) === 0) {
-
-    // erro na sessão
-    $_SESSION['erro'] = 'Usuário ou senha inválidos';
-
-    header('Location: index.php?rota=login');
-    exit;
-}
-
-// verificar se a senha está correta
-if (!password_verify($senha, $result['data'][0]->senha)) {
-
-    // erro na sessão
-    $_SESSION['erro'] = 'Usuário ou senha inválidos';
-
-    header('Location: index.php?rota=login');
-    exit;
-}
-
-// define a sessão do usuário
-$_SESSION['usuario'] = $result['data'][0];
-
-// redirecionar para a página inicial
-header('Location: index.php?rota=home');
